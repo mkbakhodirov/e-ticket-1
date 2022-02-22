@@ -7,6 +7,7 @@ import uz.pdp.eticket1.base.BaseService;
 import uz.pdp.eticket1.exception.MissRequiredParam;
 import uz.pdp.eticket1.exception.NotFoundException;
 import uz.pdp.eticket1.exception.UniqueException;
+import uz.pdp.eticket1.passenger.Passenger;
 import uz.pdp.eticket1.ticket.Ticket;
 
 import java.util.ArrayList;
@@ -56,6 +57,15 @@ public class UserService implements BaseService<UserReceiveDTO, UserResponseDTO>
         return users;
     }
 
+    @Override
+    public List<UserResponseDTO> getList(String str) {
+        return null;
+    }
+
+    public void editUser(User user) {
+        userRepository.save(user);
+    }
+
     private void check(UserReceiveDTO userReceiveDTO) {
         String email = userReceiveDTO.getEmail();
         String phoneNumber = userReceiveDTO.getPhoneNumber();
@@ -72,6 +82,13 @@ public class UserService implements BaseService<UserReceiveDTO, UserResponseDTO>
                 throw new UniqueException(userReceiveDTO.getPhoneNumber() + " is already exists");
         } else
             throw new MissRequiredParam("Email / phone number was not been entered");
+    }
+
+    public User getUser(String id) {
+        Optional<User> optional = userRepository.findById(id);
+        if (optional.isPresent())
+            return optional.get();
+        throw new NotFoundException("User is not found");
     }
 
 }

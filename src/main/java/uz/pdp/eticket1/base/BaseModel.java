@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -13,10 +13,11 @@ import java.util.Date;
 public abstract class BaseModel {
     @Id
     String id;
-    Date creationDate;
+    LocalDateTime creationDate;
+    LocalDateTime updateDate;
 
     {
-        creationDate = new Date();
+        creationDate = LocalDateTime.now();
     }
 
 }

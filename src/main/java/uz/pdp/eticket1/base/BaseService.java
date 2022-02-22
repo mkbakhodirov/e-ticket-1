@@ -7,4 +7,6 @@ public interface BaseService<T, R> {
     String add(T t);
     R get(String id);
     List<R> getList();
+    List<R> getList(String str);
 }
+
