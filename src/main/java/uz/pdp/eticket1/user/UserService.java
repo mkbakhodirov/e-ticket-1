@@ -35,8 +35,10 @@ public class UserService implements BaseService<UserReceiveDTO, UserResponseDTO>
             User user = optional.get();
             UserResponseDTO userResponseDTO = modelMapper.map(user, UserResponseDTO.class);
             List<Ticket> userTickets = user.getTickets();
-            userResponseDTO.setNumberOfTickets(userTickets.size());
-            userResponseDTO.setLastBuyTicketDate(userTickets.get(userTickets.size() - 1).getCreationDate());
+            if (!userTickets.isEmpty()) {
+                userResponseDTO.setNumberOfTickets(userTickets.size());
+                userResponseDTO.setLastBuyTicketDate(userTickets.get(userTickets.size() - 1).getCreationDate());
+            }
             return userResponseDTO;
         }
         throw new NotFoundException("User is not found");
@@ -82,6 +84,11 @@ public class UserService implements BaseService<UserReceiveDTO, UserResponseDTO>
                 throw new UniqueException(userReceiveDTO.getPhoneNumber() + " is already exists");
         } else
             throw new MissRequiredParam("Email / phone number was not been entered");
+    }
+
+    @Override
+    public UserResponseDTO get(String str1, String str2) {
+        return null;
     }
 
     public User getUser(String id) {

@@ -8,5 +8,6 @@ public interface BaseService<T, R> {
     R get(String id);
     List<R> getList();
     List<R> getList(String str);
+    R get(String str1, String str2);
 }
 

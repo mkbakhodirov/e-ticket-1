@@ -30,7 +30,7 @@ public class PassengerController implements BaseResponse {
         passengerReceiveDTO.setUserId(userId);
         String documentNumber = passengerService.add(passengerReceiveDTO);
         URI uri =
-                ServletUriComponentsBuilder.fromCurrentRequest().queryParam("documentNumber")
+                ServletUriComponentsBuilder.fromCurrentRequest().path("{documentNumber}")
                         .buildAndExpand(documentNumber).toUri();
         return ResponseEntity.created(uri).build();
     }
@@ -40,14 +40,10 @@ public class PassengerController implements BaseResponse {
         return passengerService.getList(userId);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Passenger> get(@PathVariable String id) {
-        Optional<Passenger> optional = passengerRepository.findById(id);
-        Passenger passenger;
-        if (optional.isPresent()) {
-            passenger = optional.get();
-            return new ResponseEntity<>(passenger, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    @GetMapping("/{documentNumber}")
+    public PassengerResponseDTO get(@PathVariable("documentNumber") String documentNumber,
+                                         @RequestParam(name = "userId") String userId
+    ) {
+        return passengerService.get(userId, documentNumber);
     }
 }

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import uz.pdp.eticket1.base.BaseService;
+import uz.pdp.eticket1.exception.NotFoundException;
 import uz.pdp.eticket1.exception.UniqueException;
 import uz.pdp.eticket1.user.User;
 import uz.pdp.eticket1.user.UserResponseDTO;
@@ -45,12 +46,22 @@ public class PassengerService implements BaseService<PassengerReceiveDTO, Passen
 
     @Override
     public List<PassengerResponseDTO> getList(String userId) {
-        List<PassengerResponseDTO> list = new ArrayList<>()
+        List<PassengerResponseDTO> list = new ArrayList<>();
         for (Passenger passenger : userService.getUser(userId).getPassengers()) {
             PassengerResponseDTO passengerResponseDTO = modelMapper.map(passenger, PassengerResponseDTO.class);
             list.add(passengerResponseDTO);
         }
         return list;
+    }
+
+    @Override
+    public PassengerResponseDTO get(String userId, String documentNumber) {
+        User user = userService.getUser(userId);
+        for (Passenger passenger : user.getPassengers()) {
+            if (passenger.getDocumentNumber().equals(documentNumber))
+                return modelMapper.map(passenger, PassengerResponseDTO.class);
+        }
+        throw new NotFoundException("Passenger is not found");
     }
 
     public void check(PassengerReceiveDTO passengerReceiveDTO, List<Passenger> passengers) {

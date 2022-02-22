@@ -4,28 +4,29 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import uz.pdp.eticket1.station.StationRepository;
 import uz.pdp.eticket1.station.Station;
 import uz.pdp.eticket1.base.BaseResponse;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/station")
-public class StationController implements BaseResponse {
-
+@RequestMapping("/stations")
+public class StationController {
+    private final StationService stationService;
     private final StationRepository stationRepository;
 
-    @PostMapping("/add")
-    public ResponseEntity<Station> add(@RequestBody Station station) {
-        try {
-            Station station1 = stationRepository.save(station);
-            return new ResponseEntity<>(station1, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(station, HttpStatus.CHECKPOINT);
-        }
+    @PostMapping
+    public ResponseEntity<Station> add(@RequestBody StationRequestDTO stationRequestDTO) {
+        String newId = stationService.add(stationRequestDTO);
+        URI uri =
+                ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                        .buildAndExpand(newId).toUri();
+        return ResponseEntity.created(uri).build();
     }
 
     @GetMapping("/get")
