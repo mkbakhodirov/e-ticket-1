@@ -1,4 +1,4 @@
-package uz.pdp.eticket1.document.train;
+package uz.pdp.eticket1.account;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,9 +13,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@Document(collection = "cars")
-public class Car extends BaseModel {
-    String type;
-    short totalSeats;
-    BigDecimal additionalPrice;
+@Document("accounts")
+public class Account extends BaseModel {
+    private BigDecimal balance;
 }

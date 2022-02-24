@@ -1,11 +1,9 @@
 package uz.pdp.eticket1.passenger;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.springframework.data.mongodb.core.mapping.Document;
-import uz.pdp.eticket1.base.BaseModel;
 
 import java.time.LocalDate;
 
@@ -21,5 +19,6 @@ public class Passenger {
     String documentType;
     String documentNumber;
     String country;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     LocalDate birthDate;
 }

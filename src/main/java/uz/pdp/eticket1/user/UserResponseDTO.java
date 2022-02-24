@@ -14,7 +14,6 @@ import java.util.Date;
 @AllArgsConstructor
 @Data
 public class UserResponseDTO extends BaseModel {
-    private String email;
     private String phoneNumber;
     private int numberOfTickets;
     private LocalDateTime lastBuyTicketDate;

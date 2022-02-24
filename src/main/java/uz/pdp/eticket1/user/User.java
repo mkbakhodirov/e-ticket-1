@@ -14,12 +14,12 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@FieldDefaults(level = AccessLevel.PRIVATE)
 @Document(collection = "users")
 public class User extends BaseModel {
-    String email;
-    String phoneNumber;
-    String password;
-    List<Passenger> passengers = new ArrayList<>();
-    List<Ticket> tickets = new ArrayList<>();
+    private String username;
+    private String phoneNumber;
+    private String password;
+    private int role;
+    private List<Passenger> passengers = new ArrayList<>();
+    private List<Ticket> tickets = new ArrayList<>();
 }

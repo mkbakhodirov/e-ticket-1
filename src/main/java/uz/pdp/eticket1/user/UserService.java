@@ -7,7 +7,6 @@ import uz.pdp.eticket1.base.BaseService;
 import uz.pdp.eticket1.exception.MissRequiredParam;
 import uz.pdp.eticket1.exception.NotFoundException;
 import uz.pdp.eticket1.exception.UniqueException;
-import uz.pdp.eticket1.passenger.Passenger;
 import uz.pdp.eticket1.ticket.Ticket;
 
 import java.util.ArrayList;
@@ -16,14 +15,15 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class UserService implements BaseService<UserReceiveDTO, UserResponseDTO> {
+public class UserService implements BaseService<UserRequestDTO, UserResponseDTO> {
+
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
 
     @Override
-    public String add(UserReceiveDTO userReceiveDTO) {
-        check(userReceiveDTO);
-        User user = modelMapper.map(userReceiveDTO, User.class);
+    public String add(UserRequestDTO userRequestDTO) {
+        check(userRequestDTO);
+        User user = modelMapper.map(userRequestDTO, User.class);
         User save = userRepository.save(user);
         return save.getId();
     }
@@ -33,13 +33,15 @@ public class UserService implements BaseService<UserReceiveDTO, UserResponseDTO>
         Optional<User> optional = userRepository.findById(id);
         if (optional.isPresent()) {
             User user = optional.get();
-            UserResponseDTO userResponseDTO = modelMapper.map(user, UserResponseDTO.class);
-            List<Ticket> userTickets = user.getTickets();
-            if (!userTickets.isEmpty()) {
-                userResponseDTO.setNumberOfTickets(userTickets.size());
-                userResponseDTO.setLastBuyTicketDate(userTickets.get(userTickets.size() - 1).getCreationDate());
+            if (user.getRole() == 1) {
+                UserResponseDTO userResponseDTO = modelMapper.map(user, UserResponseDTO.class);
+                List<Ticket> userTickets = user.getTickets();
+                if (!userTickets.isEmpty()) {
+                    userResponseDTO.setNumberOfTickets(userTickets.size());
+                    userResponseDTO.setLastBuyTicketDate(userTickets.get(userTickets.size() - 1).getCreationDate());
+                }
+                return userResponseDTO;
             }
-            return userResponseDTO;
         }
         throw new NotFoundException("User is not found");
     }
@@ -48,13 +50,15 @@ public class UserService implements BaseService<UserReceiveDTO, UserResponseDTO>
     public List<UserResponseDTO> getList() {
         List<UserResponseDTO> users = new ArrayList<>();
         for (User user : userRepository.findAll()) {
-            UserResponseDTO userResponseDTO = modelMapper.map(user, UserResponseDTO.class);
-            List<Ticket> userTickets = user.getTickets();
-            if (!userTickets.isEmpty()) {
-                userResponseDTO.setNumberOfTickets(userTickets.size());
-                userResponseDTO.setLastBuyTicketDate(userTickets.get(userTickets.size() - 1).getCreationDate());
+            if (user.getRole() == 1) {
+                UserResponseDTO userResponseDTO = modelMapper.map(user, UserResponseDTO.class);
+                List<Ticket> userTickets = user.getTickets();
+                if (!userTickets.isEmpty()) {
+                    userResponseDTO.setNumberOfTickets(userTickets.size());
+                    userResponseDTO.setLastBuyTicketDate(userTickets.get(userTickets.size() - 1).getCreationDate());
+                }
+                users.add(userResponseDTO);
             }
-            users.add(userResponseDTO);
         }
         return users;
     }
@@ -68,22 +72,23 @@ public class UserService implements BaseService<UserReceiveDTO, UserResponseDTO>
         userRepository.save(user);
     }
 
-    private void check(UserReceiveDTO userReceiveDTO) {
-        String email = userReceiveDTO.getEmail();
-        String phoneNumber = userReceiveDTO.getPhoneNumber();
+    private void check(UserRequestDTO userRequestDTO) {
+        String phoneNumber = userRequestDTO.getPhoneNumber();
+        String username = userRequestDTO.getUsername();
+        int role = userRequestDTO.getRole();
         User user;
-        if (email != null) {
-            user = userRepository.findUserByEmail(email);
-            System.out.println(user);
-            if (user != null)
-                throw new UniqueException(userReceiveDTO.getEmail() + " is already exists");
-        } else if (phoneNumber != null) {
+        if (role == 1 && phoneNumber != null) {
             user = userRepository.findUserByPhoneNumber(phoneNumber);
             System.out.println(user);
             if (user != null)
-                throw new UniqueException(userReceiveDTO.getPhoneNumber() + " is already exists");
+                throw new UniqueException(userRequestDTO.getPhoneNumber() + " is already exists");
+        } else if (role == 2 && username != null) {
+            user = userRepository.findUserByUsername(username);
+            System.out.println(user);
+            if (user != null)
+                throw new UniqueException(userRequestDTO.getUsername() + " is already exists");
         } else
-            throw new MissRequiredParam("Email / phone number was not been entered");
+            throw new MissRequiredParam("Phone number was not been entered");
     }
 
     @Override
@@ -96,6 +101,16 @@ public class UserService implements BaseService<UserReceiveDTO, UserResponseDTO>
         if (optional.isPresent())
             return optional.get();
         throw new NotFoundException("User is not found");
+    }
+
+    public AdminResponseDTO getAdminResponse(String adminId) {
+        Optional<User> optional = userRepository.findById(adminId);
+        if (optional.isPresent()) {
+            User user = optional.get();
+            if (user.getRole() == 2)
+                return modelMapper.map(user, AdminResponseDTO.class);
+        }
+        throw new NotFoundException(adminId + " is not admin");
     }
 
 }

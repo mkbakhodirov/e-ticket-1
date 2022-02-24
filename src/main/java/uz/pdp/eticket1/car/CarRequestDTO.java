@@ -1,4 +1,4 @@
-package uz.pdp.eticket1.station;
+package uz.pdp.eticket1.car;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class StationRequestDTO {
+public class CarRequestDTO {
     private String adminId;
-    private String name;
-    private String city;
+    private String type;
+    private short totalSeats;
 }
