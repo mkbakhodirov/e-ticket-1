@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 import uz.pdp.eticket1.base.BaseModel;
 import uz.pdp.eticket1.car.Car;
+import uz.pdp.eticket1.car.TrainCar;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -20,5 +21,5 @@ import java.util.Map;
 @Document(collection = "trains")
 public class Train extends BaseModel {
     private String type;
-    private List<Car> cars = new ArrayList<>();
+    private List<TrainCar> cars = new ArrayList<>();
 }

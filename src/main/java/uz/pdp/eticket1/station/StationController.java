@@ -29,12 +29,12 @@ public class StationController {
     }
 
     @GetMapping
-    public List<StationResponseDTO> get() {
+    public List<Station> get() {
         return stationService.getList();
     }
 
     @GetMapping("/{id}")
-    public StationResponseDTO get(@PathVariable("id") String id) {
+    public Station get(@PathVariable("id") String id) {
         return stationService.get(id);
     }
 

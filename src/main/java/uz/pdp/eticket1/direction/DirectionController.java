@@ -1,4 +1,4 @@
-package uz.pdp.eticket1.car;
+package uz.pdp.eticket1.direction;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -10,14 +10,14 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/cars")
-public class CarController {
+@RequestMapping("/directions")
+public class DirectionController {
 
-    private final CarService carService;
+    private final DirectionService directionService;
 
     @PostMapping
-    public ResponseEntity<Object> add(@RequestBody CarRequestDTO carRequestDTO) {
-        String newId = carService.add(carRequestDTO);
+    public ResponseEntity<Object> add(@RequestBody DirectionRequestDTO directionRequestDTO) {
+        String newId = directionService.add(directionRequestDTO);
         URI uri =
                 ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                         .buildAndExpand(newId).toUri();
@@ -25,18 +25,13 @@ public class CarController {
     }
 
     @GetMapping("/{id}")
-    public Car get(@PathVariable("id") String id) {
-        return carService.get(id);
+    public Direction get(@PathVariable("id") String id) {
+        return directionService.get(id);
     }
 
     @GetMapping
-    public List<Car> getList() {
-        return carService.getList();
-    }
-
-    @GetMapping("/all")
-    public List<Car> getActiveList() {
-        return carService.getActiveList();
+    public List<Direction> get() {
+        return directionService.getList();
     }
 
 }

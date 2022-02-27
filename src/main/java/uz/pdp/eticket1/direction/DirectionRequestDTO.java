@@ -4,14 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import uz.pdp.eticket1.station.StationRequestDTO;
+import uz.pdp.eticket1.train.TrainStation;
 
 import java.util.List;
 
-@NoArgsConstructor
-@AllArgsConstructor
 @Data
 public class DirectionRequestDTO {
-    private String trainId;
-    private String trainNumber;
-    private List<StationRequestDTO> stationsId;
+    private String adminId;
+    private List<StationRequestDTO> stations;
 }

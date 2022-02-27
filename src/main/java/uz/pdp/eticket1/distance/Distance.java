@@ -13,7 +13,7 @@ import uz.pdp.eticket1.base.BaseModel;
 @Data
 @Document(collection = "distances")
 public class Distance extends BaseModel {
-    private String station1;
-    private String station2;
+    private String fromStationId;
+    private String toStationId;
     private double km;
 }

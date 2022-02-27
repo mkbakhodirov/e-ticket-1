@@ -4,10 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
-@AllArgsConstructor
 @Data
 public class DistanceRequestDTO {
+    private String adminId;
     private String station1;
     private String station2;
     private double km;

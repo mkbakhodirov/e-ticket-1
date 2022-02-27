@@ -4,15 +4,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import uz.pdp.eticket1.base.BaseResponse;
 
 import java.net.URI;
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/users")
-public class UserController implements BaseResponse {
+@RequestMapping("/api/users")
+public class UserController {
 
     private final UserService userService;
 
@@ -26,12 +25,17 @@ public class UserController implements BaseResponse {
     }
 
     @GetMapping
-    public List<UserResponseDTO> get() {
+    public List<User> get() {
         return userService.getList();
     }
 
     @GetMapping("/{id}")
-    public UserResponseDTO get(@PathVariable("id") String id) {
+    public User get(@PathVariable("id") String id) {
         return userService.get(id);
+    }
+
+    @GetMapping("/admin")
+    public User login(@RequestBody UserRequestDTO userRequestDTO) {
+        return userService.loginAdmin(userRequestDTO.getUsername(), userRequestDTO.getPassword());
     }
 }

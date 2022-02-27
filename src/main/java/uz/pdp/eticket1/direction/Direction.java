@@ -6,9 +6,10 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 import uz.pdp.eticket1.base.BaseModel;
-import uz.pdp.eticket1.station.DirectionStationResponseDTO;
-import uz.pdp.eticket1.train.TrainResponseDTO;
+import uz.pdp.eticket1.station.DirectionStation;
+import uz.pdp.eticket1.train.DirectionTrain;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
@@ -17,6 +18,6 @@ import java.util.List;
 @Data
 @Document(collection = "directions")
 public class Direction extends BaseModel {
-    private List<DirectionStationResponseDTO> stations;
-    private List<TrainResponseDTO> trains;
+    private List<DirectionStation> stations;
+    private List<DirectionTrain> trains = new ArrayList<>();
 }

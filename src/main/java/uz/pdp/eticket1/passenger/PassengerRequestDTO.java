@@ -6,10 +6,8 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
-@NoArgsConstructor
-@AllArgsConstructor
 @Data
-public class PassengerReceiveDTO {
+public class PassengerRequestDTO {
     String userId;
     String passengerType;
     String firstName;

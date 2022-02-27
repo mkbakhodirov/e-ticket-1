@@ -1,14 +1,12 @@
 package uz.pdp.eticket1.distance;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,12 +25,12 @@ public class DistanceController {
     }
 
     @GetMapping
-    public List<DistanceResponseDTO> get() {
+    public List<Distance> get() {
         return distanceService.getList();
     }
 
     @GetMapping("/{id}")
-    public DistanceResponseDTO get(@PathVariable("id") String id) {
+    public Distance get(@PathVariable("id") String id) {
         return distanceService.get(id);
     }
 

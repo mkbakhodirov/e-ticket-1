@@ -1,12 +1,11 @@
 package uz.pdp.eticket1.base;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
-import uz.pdp.eticket1.user.AdminResponseDTO;
+import uz.pdp.eticket1.user.UserBase;
 
 import java.time.LocalDateTime;
 
@@ -15,16 +14,16 @@ import java.time.LocalDateTime;
 @Data
 public abstract class BaseModel {
     @Id
-    @JsonProperty(value = "_id")
     protected String id;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
-    protected LocalDateTime creationDate;
+    protected LocalDateTime creationTime;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
-    protected LocalDateTime updateDate;
-    protected AdminResponseDTO updateBy;
+    protected LocalDateTime updateTime;
+    protected boolean isActive;
+    protected UserBase updateBy;
 
     {
-        creationDate = LocalDateTime.now();
+        creationTime = LocalDateTime.now();
+        isActive = true;
     }
-
 }

@@ -5,10 +5,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import uz.pdp.eticket1.base.BaseService;
 import uz.pdp.eticket1.distance.Distance;
-import uz.pdp.eticket1.distance.DistanceResponseDTO;
 import uz.pdp.eticket1.exception.NotFoundException;
 import uz.pdp.eticket1.exception.UniqueException;
-import uz.pdp.eticket1.user.AdminResponseDTO;
+import uz.pdp.eticket1.user.UserBase;
 import uz.pdp.eticket1.user.UserService;
 
 import java.util.ArrayList;
@@ -17,7 +16,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class StationService implements BaseService<StationRequestDTO, StationResponseDTO> {
+public class StationService implements BaseService<StationRequestDTO, Station> {
 
     private final StationRepository stationRepository;
     private final UserService userService;
@@ -26,10 +25,10 @@ public class StationService implements BaseService<StationRequestDTO, StationRes
     @Override
     public String add(StationRequestDTO stationRequestDTO) {
         try {
-            AdminResponseDTO adminResponse = userService.getAdminResponse(stationRequestDTO.getAdminId());
-            System.out.println(adminResponse);
+            String adminId = stationRequestDTO.getAdminId();
+            UserBase userBase = userService.getUserBase(adminId);
             Station station = modelMapper.map(stationRequestDTO, Station.class);
-            station.setUpdateBy(adminResponse);
+            station.setUpdateBy(userBase);
             return stationRepository.save(station).getId();
         } catch (Exception e) {
             throw new UniqueException(stationRequestDTO.getName() + " already exists");
@@ -37,32 +36,27 @@ public class StationService implements BaseService<StationRequestDTO, StationRes
     }
 
     @Override
-    public StationResponseDTO get(String id) {
+    public Station get(String id) {
         Optional<Station> optional = stationRepository.findById(id);
         if (optional.isPresent()) {
-            Station station = optional.get();
-            return modelMapper.map(station, StationResponseDTO.class);
+            return optional.get();
         }
         throw new NotFoundException("Station is not found");
     }
 
     @Override
-    public List<StationResponseDTO> getList() {
-        List<StationResponseDTO> list = new ArrayList<>();
-        for (Station station : stationRepository.findAll()) {
-            StationResponseDTO stationResponseDTO = modelMapper.map(station, StationResponseDTO.class);
-            list.add(stationResponseDTO);
-        }
-        return list;
-    }
-
-    @Override
-    public List<StationResponseDTO> getList(String str) {
+    public List<Station> getActiveList() {
         return null;
     }
 
     @Override
-    public StationResponseDTO get(String str1, String str2) {
+    public List<Station> getList() {
+        return stationRepository.findAll();
+    }
+
+    @Override
+    public List<Station> getList(String str) {
         return null;
     }
+
 }

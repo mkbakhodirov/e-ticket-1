@@ -7,7 +7,6 @@ import uz.pdp.eticket1.base.BaseService;
 import uz.pdp.eticket1.exception.MissRequiredParam;
 import uz.pdp.eticket1.exception.NotFoundException;
 import uz.pdp.eticket1.exception.UniqueException;
-import uz.pdp.eticket1.ticket.Ticket;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +14,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class UserService implements BaseService<UserRequestDTO, UserResponseDTO> {
+public class UserService implements BaseService<UserRequestDTO, User> {
 
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
@@ -29,42 +28,25 @@ public class UserService implements BaseService<UserRequestDTO, UserResponseDTO>
     }
 
     @Override
-    public UserResponseDTO get(String id) {
+    public User get(String id) {
         Optional<User> optional = userRepository.findById(id);
-        if (optional.isPresent()) {
-            User user = optional.get();
-            if (user.getRole() == 1) {
-                UserResponseDTO userResponseDTO = modelMapper.map(user, UserResponseDTO.class);
-                List<Ticket> userTickets = user.getTickets();
-                if (!userTickets.isEmpty()) {
-                    userResponseDTO.setNumberOfTickets(userTickets.size());
-                    userResponseDTO.setLastBuyTicketDate(userTickets.get(userTickets.size() - 1).getCreationDate());
-                }
-                return userResponseDTO;
-            }
-        }
+        if (optional.isPresent())
+            return optional.get();
         throw new NotFoundException("User is not found");
     }
 
     @Override
-    public List<UserResponseDTO> getList() {
-        List<UserResponseDTO> users = new ArrayList<>();
-        for (User user : userRepository.findAll()) {
-            if (user.getRole() == 1) {
-                UserResponseDTO userResponseDTO = modelMapper.map(user, UserResponseDTO.class);
-                List<Ticket> userTickets = user.getTickets();
-                if (!userTickets.isEmpty()) {
-                    userResponseDTO.setNumberOfTickets(userTickets.size());
-                    userResponseDTO.setLastBuyTicketDate(userTickets.get(userTickets.size() - 1).getCreationDate());
-                }
-                users.add(userResponseDTO);
-            }
-        }
-        return users;
+    public List<User> getActiveList() {
+        return null;
     }
 
     @Override
-    public List<UserResponseDTO> getList(String str) {
+    public List<User> getList() {
+        return  userRepository.findAll();
+    }
+
+    @Override
+    public List<User> getList(String str) {
         return null;
     }
 
@@ -91,26 +73,21 @@ public class UserService implements BaseService<UserRequestDTO, UserResponseDTO>
             throw new MissRequiredParam("Phone number was not been entered");
     }
 
-    @Override
-    public UserResponseDTO get(String str1, String str2) {
-        return null;
+    public User loginAdmin(String username, String password) {
+        User user = userRepository.findUserByUsernameAndPassword(username, password);
+        if (user != null)
+            return user;
+        throw new NotFoundException("username or password is not correct");
     }
 
-    public User getUser(String id) {
+    public UserBase getUserBase(String id) {
         Optional<User> optional = userRepository.findById(id);
-        if (optional.isPresent())
-            return optional.get();
-        throw new NotFoundException("User is not found");
-    }
-
-    public AdminResponseDTO getAdminResponse(String adminId) {
-        Optional<User> optional = userRepository.findById(adminId);
         if (optional.isPresent()) {
             User user = optional.get();
             if (user.getRole() == 2)
-                return modelMapper.map(user, AdminResponseDTO.class);
+                return modelMapper.map(user, UserBase.class);
         }
-        throw new NotFoundException(adminId + " is not admin");
+        throw new NotFoundException("ID: " + id + " is not admin");
     }
 
 }

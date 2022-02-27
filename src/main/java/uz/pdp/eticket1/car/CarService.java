@@ -4,48 +4,53 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import uz.pdp.eticket1.base.BaseService;
-import uz.pdp.eticket1.user.AdminResponseDTO;
-import uz.pdp.eticket1.user.User;
+import uz.pdp.eticket1.exception.NotFoundException;
+import uz.pdp.eticket1.user.UserBase;
 import uz.pdp.eticket1.user.UserService;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class CarService implements BaseService<CarRequestDTO, CarResponseDTO> {
+public class CarService implements BaseService<CarRequestDTO, Car> {
 
     private final CarRepository carRepository;
     private final UserService userService;
     private final ModelMapper modelMapper;
 
+
     @Override
     public String add(CarRequestDTO carRequestDTO) {
         String adminId = carRequestDTO.getAdminId();
-        AdminResponseDTO adminResponseDTO = userService.getAdminResponse(adminId);
+        UserBase userBase = userService.getUserBase(adminId);
         Car car = modelMapper.map(carRequestDTO, Car.class);
-        System.out.println(car);
-        car.setUpdateBy(adminResponseDTO);
-        System.out.println(car.getUpdateBy());
+        car.setUpdateBy(userBase);
         return carRepository.save(car).getId();
     }
 
     @Override
-    public CarResponseDTO get(String id) {
-        return null;
+    public Car get(String id) {
+        Optional<Car> optional = carRepository.findById(id);
+        if (optional.isPresent()) {
+            return optional.get();
+        }
+        throw new NotFoundException("Car is not found");
     }
 
     @Override
-    public List<CarResponseDTO> getList() {
-        return null;
+    public List<Car> getActiveList() {
+        return carRepository.findAllByActive(true);
     }
 
     @Override
-    public List<CarResponseDTO> getList(String str) {
-        return null;
+    public List<Car> getList() {
+        return carRepository.findAll();
     }
 
     @Override
-    public CarResponseDTO get(String str1, String str2) {
+    public List<Car> getList(String str) {
         return null;
     }
+
 }

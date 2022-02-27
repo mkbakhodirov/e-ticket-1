@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class DistanceService implements BaseService<DistanceRequestDTO, DistanceResponseDTO> {
+public class DistanceService implements BaseService<DistanceRequestDTO, Distance> {
 
     private final DistanceRepository distanceRepository;
     private final ModelMapper modelMapper;
@@ -26,39 +26,32 @@ public class DistanceService implements BaseService<DistanceRequestDTO, Distance
     }
 
     @Override
-    public DistanceResponseDTO get(String id) {
+    public Distance get(String id) {
         Optional<Distance> optional = distanceRepository.findById(id);
-        if (optional.isPresent()) {
-            Distance distance = optional.get();
-            return modelMapper.map(distance, DistanceResponseDTO.class);
-        }
+        if (optional.isPresent())
+            return optional.get();
         throw new NotFoundException("Distance is not found");
     }
 
     @Override
-    public List<DistanceResponseDTO> getList() {
-        List<DistanceResponseDTO> list = new ArrayList<>();
-        for (Distance distance : distanceRepository.findAll()) {
-            DistanceResponseDTO distanceResponseDTO = modelMapper.map(distance, DistanceResponseDTO.class);
-            list.add(distanceResponseDTO);
-        }
-        return list;
-    }
-
-    @Override
-    public List<DistanceResponseDTO> getList(String str) {
+    public List<Distance> getActiveList() {
         return null;
     }
 
     @Override
-    public DistanceResponseDTO get(String str1, String str2) {
+    public List<Distance> getList() {
+        return distanceRepository.findAll();
+    }
+
+    @Override
+    public List<Distance> getList(String str) {
         return null;
     }
 
     private void check(String station1, String station2) {
         for (Distance station : distanceRepository.findAll()) {
-            String from = station.getStation1();
-            String to = station.getStation2();
+            String from = station.getFromStationId();
+            String to = station.getToStationId();
             if (station1.equals(from) && station2.equals(to))
                 throw new UniqueException(station1 + " and " + station2 + " are already exist");
             if (station2.equals(from) && station1.equals(to))

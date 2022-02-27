@@ -1,23 +1,24 @@
-package uz.pdp.eticket1.car;
+package uz.pdp.eticket1.train;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import uz.pdp.eticket1.car.CarRequestDTO;
 
 import java.net.URI;
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/cars")
-public class CarController {
+@RequestMapping("/trains")
+public class TrainController {
 
-    private final CarService carService;
+    private final TrainService trainService;
 
     @PostMapping
-    public ResponseEntity<Object> add(@RequestBody CarRequestDTO carRequestDTO) {
-        String newId = carService.add(carRequestDTO);
+    public ResponseEntity<Object> add(@RequestBody TrainRequestDTO trainRequestDTO) {
+        String newId = trainService.add(trainRequestDTO);
         URI uri =
                 ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                         .buildAndExpand(newId).toUri();
@@ -25,18 +26,13 @@ public class CarController {
     }
 
     @GetMapping("/{id}")
-    public Car get(@PathVariable("id") String id) {
-        return carService.get(id);
+    public Train get(@PathVariable("id") String id) {
+        return trainService.get(id);
     }
 
     @GetMapping
-    public List<Car> getList() {
-        return carService.getList();
-    }
-
-    @GetMapping("/all")
-    public List<Car> getActiveList() {
-        return carService.getActiveList();
+    public List<Train> get() {
+        return trainService.getList();
     }
 
 }
